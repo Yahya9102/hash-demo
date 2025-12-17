@@ -1,0 +1,19 @@
+apiVersion: apps/v1            # API-version för Deployments
+kind: Deployment               # Vi skapar en Deployment (hanterar pods)
+metadata:
+  name: flask-hello            # Namn på deploymenten
+spec:
+  replicas: 1                  # Antal pods (1 räcker för demo)
+  selector:
+    matchLabels:
+      app: flask-hello         # Deployment "äger" pods med denna label
+  template:
+    metadata:
+      labels:
+        app: flask-hello       # Label på podden (måste matcha selector)
+    spec:
+      containers:
+        - name: flask-hello    # Namn på containern i podden
+          image: yahyasystementor/flask-eks-hello:1.0  # Docker Hub image
+          ports:
+            - containerPort: 8080  # Porten som appen lyssnar på i containern

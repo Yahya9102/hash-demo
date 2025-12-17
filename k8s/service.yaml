@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask-hello-lb
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing  # tvinga publik LB i AWS
+spec:
+  type: LoadBalancer           # AWS skapar en Load Balancer åt oss
+  selector:
+    app: flask-hello           # Skicka trafik till pods med denna label
+  ports:
+    - port: 80                 # Publik port (http)
+      targetPort: 8080         # Skickas vidare till containerPort 8080

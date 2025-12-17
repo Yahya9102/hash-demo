@@ -1,18 +1,20 @@
-FROM ubuntu:24.04                                          
+# Välj en liten Python-image
+FROM python:3.12-slim
 
-RUN apt-get update && apt-get install -y \                 
-    build-essential \                                       
-    pkg-config \                                             
-    libssl-dev \                                       
-    libargon2-dev \                                         
-    && rm -rf /var/lib/apt/lists/*                           
+# Sätt arbetskatalog i containern
+WORKDIR /app
 
-WORKDIR /app                                                
+# Kopiera dependencies först (bra för cache)
+COPY requirements.txt .
 
-COPY main.cpp ./                                     
+# Installera dependencies
+RUN pip install --no-cache-dir -r requirements.txt
 
-RUN g++ -O2 -std=c++17 -Wall -Wextra -o hasher main.cpp \    
-    -lssl -lcrypto -largon2                                 
+# Kopiera resten av koden
+COPY app.py .
 
-ENTRYPOINT ["./hasher"]
-                      
+# Appen lyssnar på 8080 (info till människor/tools)
+EXPOSE 8080
+
+# Starta appen
+CMD ["python", "app.py"]
